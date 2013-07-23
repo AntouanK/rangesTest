@@ -7,44 +7,6 @@
 #include <algorithm>
 
 using namespace std;
-/***************/
-// The partition function
-int partition(int* input, int p, int r)
-{
-    int pivot = input[r];
-
-    while ( p < r )
-    {
-        while ( input[p] < pivot )
-            p++;
-
-        while ( input[r] > pivot )
-            r--;
-
-        if ( input[p] == input[r] )
-            p++;
-        else if ( p < r )
-        {
-            int tmp = input[p];
-            input[p] = input[r];
-            input[r] = tmp;
-        }
-    }
-
-    return r;
-}
-
-// The quicksort recursive function
-void quicksort(int* input, int p, int r)
-{
-    if ( p < r )
-    {
-        int j = partition(input, p, r);        
-        quicksort(input, p, j-1);
-        quicksort(input, j+1, r);
-    }
-}
-/************************/
 
 //  our data structs
 struct range {
@@ -94,10 +56,12 @@ int markPoints(range r, vector<point> p, int start=0){
     return 0;
 };
 
+//  main
 int main()
 {
     vector<point> points;
     vector<range> ranges;
+
     int i=0;
     string line;
     ifstream infile;
@@ -111,7 +75,6 @@ int main()
        int a;
        if (!(iss >> a)) { break; } // error
     
-       //cout << a << endl;
 	   points.push_back(point());
        points[i].value = a;
        points[i].rangesHits = 0;
@@ -122,7 +85,7 @@ int main()
     infile.close();
     infile.clear();
 
-    i = 0;
+    i=0;
     infile.open("extents.txt");
     
     while (getline(infile, line) && i < 100000) {
@@ -135,7 +98,6 @@ int main()
     		cout<< "ERROR" << endl;
     	} // error
     
-        //cout << a << b << endl;
         ranges.push_back(range());
         ranges[i].start = a;
         ranges[i].end = b;
@@ -166,11 +128,6 @@ int main()
 
     cout << difference/1000 << " seconds" << endl;
 
-    // i = 0;
-    // while (i<1000){
-    //     cout << points.at(i).value << endl;
-    //     i+=1;
-    // }
     return 0;
 }
 
