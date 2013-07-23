@@ -14,4 +14,5 @@ We can have the results, in any file we want, simply by giving the -o flag with 
 simple brute force version in demo.cpp
 ---------------------------------------
 usage
-  g++ demo.cpp -o demo && ./demo -o res.txt
+
+```g++ demo.cpp -o demo && ./demo -o res.txt```
