@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fstream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -18,11 +19,52 @@ struct point {
     int rangesHits;
 };
 
-
 //  function to check if point is in range
-bool isInRange(point p, range r){
+int calcRangeHits(point* p, map<unsigned int, int>* weightsMap){
 
-    return (p.value >= r.start && p.value <= r.end);
+    int counter = 0;
+
+    for (std::map<unsigned int,int>::iterator it=weightsMap->begin(); it!=weightsMap->end(); ++it){
+
+        if(it->first == p->value){
+            return counter + it->second;
+        } else {
+            counter += it->second;
+        }
+    }
+        
+    return counter;
+}
+
+void mergeRanges(vector<range>* v, map<unsigned int, int>* map){
+
+    for(int i=0; i < v->size(); i+=1){
+
+        int start = (*v)[i].start,
+            end = (*v)[i].end;
+        std::map<unsigned int, int>::iterator it;
+        it = map->find(start);
+
+        if(it == map->end()){
+            (*map)[start] = 1;
+        } else {
+            (*map)[start] = it->second + 1;
+        }
+        
+        it = map->find(end);
+        if(it == map->end()){
+            (*map)[end+1] = -1;
+        } else {
+            (*map)[end+1] = it->second - 1;
+        }
+
+        //(*map)[((*v)[i].end+1)] = map->find(((*v)[i].end+1)) - 1;
+    }
+
+    /*
+    for (std::map<unsigned int,int>::iterator it=map->begin(); it!=map->end(); ++it)
+        std::cout << it->first << " => " << it->second << '\n';
+    */
 }
 
 //  main
@@ -30,6 +72,7 @@ int main(int argc, char* const argv[]){
 
     vector<point> points;
     vector<range> ranges;
+    map<unsigned int, int> weightRanges;
 
     int i=0;
     string line;
@@ -80,18 +123,22 @@ int main(int argc, char* const argv[]){
     infile.close();
     infile.clear();
 
-    cout << "calculating range hits for each point..." << endl;
-
     t1=clock(); // first time capture
 
-    for(int i=0; i<points.size(); i+=1){
+    //  merge ranges into a weighted map
+    cout << "merging ranges...  ";
+    mergeRanges(&ranges, &weightRanges);
+    cout << "done" << endl;
 
-        for(int j=0; j<ranges.size(); j+=1){
-            
-            if(isInRange(points[i], ranges[j])){
-                points[i].rangesHits += 1;
-            }
-        }
+    cout << "calculating hits for " << points.size() << " points ... " << endl;
+    for(int k=0; k<points.size(); k+=1){
+
+        points[k].rangesHits = calcRangeHits(&points[k], &weightRanges);
+
+        // if(k%1000==0){
+        //     cout << k << " " << points[k].rangesHits << endl;
+        // }
+        
     }
 
     t2=clock(); // we get the time now
