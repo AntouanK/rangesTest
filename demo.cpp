@@ -20,7 +20,7 @@ struct point {
 
 
 //  function to check if point is in range
-bool isInRange(point p, range r){
+bool isInRange(point p, range r){	//	TODO, pass by reference or pointers maybe?
 
     return (p.value >= r.start && p.value <= r.end);
 }
