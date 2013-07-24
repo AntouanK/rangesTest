@@ -1,11 +1,9 @@
 #include <time.h> // for clock
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <string.h>
 #include <fstream>
 #include <vector>
-#include <map>
 
 using namespace std;
 
